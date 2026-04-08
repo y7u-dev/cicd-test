@@ -1,25 +1,34 @@
 pipeline {
     agent any
-    environment {                                         // ← ① 오타 수정
-        strDockerImage = "y7u-dev/cicd-test:0.1"         // ← ② 변수명 통일
+    environment {
+        strDockerImage = "y7u-dev/cicd-test:0.1"
     }
     stages {
         stage('Github Pull') {
-            steps {                                       // ← ③ 구조 수정
+            steps {
                 git branch: 'main', url: 'https://github.com/y7u-dev/cicd-test.git'
             }
-        }                     
+        }
         stage('Docker Image Build') {
             steps {
                 script {
-                    oDockerImage = docker.build(strDockerImage, "-f Dockerfile")  // ← ④⑤ 수정
+                    oDockerImage = docker.build(strDockerImage, "-f Dockerfile .")
                 }
             }
-        }                     
+        }
+        stage('Docker Image Push') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub-Credential') {
+                        oDockerImage.push()
+                    }
+                }
+            }
+        }
         stage('Git clone end') {
             steps {
                 sh 'touch cicd_test.txt'
-                sh 'echo "git clone end" > cicd_test'  
+                sh 'echo "git clone end" > cicd_test'
             }
         }
         stage('Deploy Server') {
