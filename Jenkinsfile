@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        strDockerImage = "y7u-dev/cicd-test:0.1"
+        strDockerImage = "gnwowne/cicd-test:0.1"
     }
     stages {
         stage('Github Pull') {
