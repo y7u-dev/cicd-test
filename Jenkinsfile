@@ -1,7 +1,10 @@
+import java.text.SimpleDateFormat
+def TODAY = (new SimpleDateFormat("yyyyMMdd")).format(new Date())
 pipeline {
     agent any
     environment {
-        strDockerImage = "gnwowne/cicd-test:0.1"
+        strDockerTag = "${TODAY}_${BUILD_ID}"
+        strDockerImage = "gnwowne/cicd-test:${strDockerTag}"
     }
     stages {
         stage('Github Pull') {
